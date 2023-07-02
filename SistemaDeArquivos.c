@@ -23,16 +23,14 @@ void criar_arquivo(){
    scanf("%d", &Arquivo.bits);
 
    Arquivo.Blocos = (Arquivo.Bits/8);
-
-
-   
+   gravar_disco(Arquivo);
 
 }
 
 // verifica se ja existe um arquivo com o nome escolhido
 void verificar_existencia(){
    char op;
-   for(int i = 0; i <= 256; i++){
+   for(int i = 0; i < 256; i++){
    {}
       if(strcmp(Arquivo.Nome, Disco[i].Nome) == 0){
          printf("Um arquivo com esse nome ja existe!\n");
@@ -47,7 +45,24 @@ void verificar_existencia(){
       }
    }
 }
+// grava os dados coletados em criar_arquivo no Disco
+int gravar_disco(struct Dados_arquivo Arquivo){
 
+   for(int i = 0; i < 256; i++){
+      if(Disco[i].Bits == 0){
+         int Bloco_final = i + Arquivo.Blocos;
+         if(i == Bloco_final){
+            return 0;
+         } else {
+            strcpi(Disco[i].Nome, Arquivo.Nome)
+            Disco[i].Bits = Arquivo.Bits
+            Disco[i].Blocos = Arquivo.Blocos
+            Disco[i].Bloco_inicio = Arquivo.Bloco_inicio
+         }
+      }
+   }
+   return 1;
+}
 void remover_arquivo(){
 }
 
@@ -60,6 +75,10 @@ void exibir_info(){
 
 
 int main(){
+
+   for(int i = 0; i < 256; i++){
+      Disco[i].Bits = 0;
+   }
 
    criar_arquivo();
 
