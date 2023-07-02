@@ -15,6 +15,25 @@ struct Dados_arquivo{
 struct Dados_arquivo Disco[256];
 struct Dados_arquivo Arquivo;
 
+void criar_arquivo(){
+   int gravar_disco(struct Dados_arquivo Arquivo);
+   int x;
+   printf("Como deseja nomear o arquivo?");
+   scanf("%[^\n]", &Arquivo.Nome);
+   printf("Quantos bits o arquivo possui?\n");
+   scanf("%d", &Arquivo.Bits);
+
+   Arquivo.Blocos = (Arquivo.Bits/8);
+
+   x = gravar_disco(Arquivo);
+   if( x == 0){
+      printf("Arquivo gravado com sucesso\n");
+   } else {
+      printf("Erro\n");
+   }
+
+}
+
 // verifica se ja existe um arquivo com o nome escolhido
 void verificar_existencia(){
    char op;
@@ -35,10 +54,17 @@ void verificar_existencia(){
 }
 // grava os dados coletados em criar_arquivo no Disco
 int gravar_disco(struct Dados_arquivo Arquivo){
+   int auxiliar_blocofinal = 0; // aqui
+   int Bloco_final; // aqui
+   printf("%d   %d\n", Disco[0].Bits, Arquivo.Blocos);
 
    for(int i = 0; i < 256; i++){
       if(Disco[i].Bits == 0){
-         int Bloco_final = i + Arquivo.Blocos;
+         
+         if(auxiliar_blocofinal == 0){// daqui
+            Bloco_final = i + Arquivo.Blocos;
+            auxiliar_blocofinal = 1;
+         } // até aqui
          if(i == Bloco_final){
             return 0;
          } else {
@@ -51,25 +77,6 @@ int gravar_disco(struct Dados_arquivo Arquivo){
    }
    return 1;
 }
-
-void criar_arquivo(){
-   int i;
-   printf("Como deseja nomear o arquivo?");
-   scanf("%[^\n]", &Arquivo.Nome);
-   printf("Quantos bits o arquivo possui?\n");
-   scanf("%d", &Arquivo.Bits);
-
-   Arquivo.Blocos = (Arquivo.Bits/8);
-   i = gravar_disco(Arquivo);
-   if(i == 0){
-      printf("Arquivo salvo com sucesso!\n");
-   } else{
-      printf("ERRO!\n");
-      printf("NAO HA MEMORIA SUFICIENTE DISPONIVEL\n");
-   }
-
-}
-
 void remover_arquivo(){
 }
 
