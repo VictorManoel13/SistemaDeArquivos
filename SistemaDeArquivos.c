@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<math.h>
 
 struct Dados_arquivo{
 
@@ -45,12 +46,12 @@ void criar_arquivo(){
    printf("Quantos bits o arquivo possui? ");
    scanf("%f", &Arquivo.Bits);
 
-   Arquivo.Blocos = (Arquivo.Bits/8) + 1;
+   Arquivo.Blocos = ceil(Arquivo.Bits/8);
 
    i = gravar_disco(Arquivo);
    if(i == 0){
       printf("Arquivo salvo com sucesso!\n");
-      //printf("%f", Arquivo.Blocos);
+      printf("%f", Arquivo.Blocos);
    } else{
       printf("ERRO!\n");
       printf("NAO HA MEMORIA SUFICIENTE DISPONIVEL\n");
