@@ -42,7 +42,7 @@ int gravar_disco(struct Dados_arquivo Arquivo){
 void criar_arquivo(){
    int i;
    printf("Como deseja nomear o arquivo? ");
-   scanf("%[^\n]", &Arquivo.Nome);
+   fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
    printf("Quantos bits o arquivo possui? ");
    scanf("%f", &Arquivo.Bits);
 
@@ -51,7 +51,7 @@ void criar_arquivo(){
    i = gravar_disco(Arquivo);
    if(i == 0){
       printf("Arquivo salvo com sucesso!\n");
-      printf("%f", Arquivo.Blocos);
+      printf("Seu arquivo ocupara %.f blocos do disco.\n", Arquivo.Blocos);
    } else{
       printf("ERRO!\n");
       printf("NAO HA MEMORIA SUFICIENTE DISPONIVEL\n");
@@ -94,13 +94,45 @@ void desfragmentar(){
 void exibir_info(){
 
    for(int i = 0; i < 256; i++){
-      printf("%s\n", Disco[i].Nome);
-      printf("%.f\n", Disco[i].Bits);
-      printf("%.f\n", Disco[i].Blocos);
-      printf("%d\n", Disco[i].Bloco_inicio);
-      printf("%d\n\n", (Disco[i].Bloco_inicio + Disco[i].Blocos));
+      printf("%s\t", Disco[i].Nome);
+      printf("%.f\t", Disco[i].Bits);
+      printf("%.f\t", Disco[i].Blocos);
+      printf("%d\t", Disco[i].Bloco_inicio);
+      printf("%.f\n", (Disco[i].Bloco_inicio + Disco[i].Blocos));
    }
 
+}
+
+void menu(){
+
+   int op;
+   printf("Bem vindo ao Emulador de disco 3000 :)\n");
+   do{
+      printf("\nPor favor selecione uma opção\n");
+      printf("\t1 para criar um arquivo\n");
+      printf("\t2 para excluir um arquivo\n");
+      printf("\t3 para exibir uma lista do estado do disco\n");
+      printf("\t4 para desfragmentar o disco\n");
+      printf("\tAperte 5 para sair\n");
+      scanf("%d", &op);
+
+      switch(op){
+         case 1:
+            getchar();
+            criar_arquivo();
+            break;
+         case 2:
+            remover_arquivo(Arquivo);
+            break;
+         case 3:
+            exibir_info();
+            break;
+         case 4:
+            desfragmentar();
+            break;
+      }
+   }while(op != 5);
+   printf("Obrigo por usar o 'Emulador de disco 3000 :)', tenha uma boa vida.\n");
 }
 
 
@@ -111,29 +143,6 @@ int main(){
       Disco[i].Bits = 0;
    }
 
-   
-   int op;
-   printf("Bem vindo ao Emulador de disco 3000 :)\n");
-   printf("Por favor selecione uma opção\n");
-   printf("\t1 para criar um arquivo\n");
-   printf("\t2 para excluir um arquivo\n");
-   printf("\t3 para exibir uma lista do estado do disco\n");
-   scanf("%d", &op);
-
-   switch(op){
-      case 1:
-         getchar();
-         criar_arquivo();
-         break;
-      case 2:
-         remover_arquivo(Arquivo);
-         break;
-      case 3:
-         exibir_info();
-         break;
-      case 4:
-         desfragmentar();
-         break;
-   }
+   menu();
 
 }
