@@ -20,8 +20,9 @@ struct Dados_arquivo Arquivo;
 int gravar_disco(struct Dados_arquivo Arquivo){
    int Auxiliar_bloco_final = 0;
    int Bloco_final;
-   for(int i = 0; i < 256; i++){
-      if(Auxiliar_bloco_final == 0){
+   int i;
+   for(i = 0; i < 256; i++){
+      if(Auxiliar_bloco_final == 0 && Disco[i].Bits == 0){
             Bloco_final = i + Arquivo.Blocos;
             Auxiliar_bloco_final = 1;
          }
@@ -62,7 +63,8 @@ void criar_arquivo(){
 // verifica se ja existe um arquivo com o nome escolhido
 void verificar_existencia(){
    char op;
-   for(int i = 0; i < 256; i++){
+   int i;
+   for(i = 0; i < 256; i++){
       if(strcmp(Arquivo.Nome, Disco[i].Nome) == 0){
          printf("Um arquivo com esse nome ja existe!\n");
          printf("Gostaria de tentar outro nome? s/n");
@@ -92,8 +94,8 @@ void desfragmentar(){
 }
 
 void exibir_info(){
-
-   for(int i = 0; i < 256; i++){
+    int i;
+   for(i = 0; i < 256; i++){
       printf("%s\t", Disco[i].Nome);
       printf("%.f\t", Disco[i].Bits);
       printf("%.f\t", Disco[i].Blocos);
@@ -138,8 +140,8 @@ void menu(){
 
 
 int main(){
-
-   for(int i = 0; i < 256; i++){
+    int i;
+   for(i = 0; i < 256; i++){
       Disco[i].Bits = 0;
    }
 
