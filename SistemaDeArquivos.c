@@ -9,6 +9,7 @@ struct Dados_arquivo{
    float Bytes;
    float Blocos;
    int Bloco_inicio;
+   int Bloco_final;
 
 };
 
@@ -40,7 +41,7 @@ void criar_arquivo(){
 void verificar_existencia(){
    char op;
    for(int i = 0; i < 256; i++){
-   {}
+
       if(strcmp(Arquivo.Nome, Disco[i].Nome) == 0){
          printf("Um arquivo com esse nome ja existe!\n");
          printf("Gostaria de tentar outro nome? s/n");
@@ -59,14 +60,12 @@ int gravar_disco(struct Dados_arquivo Arquivo){
    int auxiliar_bloco_final = 0;
    int auxiliar_bloco_inicio;
    int Bloco_final;
-   printf("%f   %f\n", Disco[0].Bytes, Arquivo.Blocos);
-
    for(int i = 0; i < 256; i++){
       if(Disco[i].Bytes == 0){
          
          if(auxiliar_bloco_final == 0){
             Bloco_final = i + Arquivo.Blocos;
-            auxiliar_bloco_inicio = i;
+            auxiliar_bloco_inicio = i + 1;
             auxiliar_bloco_final = 1; 
          }
          if(i == Bloco_final){
@@ -76,12 +75,13 @@ int gravar_disco(struct Dados_arquivo Arquivo){
             Disco[i].Bytes = Arquivo.Bytes;
             Disco[i].Blocos = Arquivo.Blocos;
             Disco[i].Bloco_inicio = auxiliar_bloco_inicio;
-         
+            Disco[i].Bloco_final = Bloco_final;
          }
       }
    }
    return 1;
 }
+
 void remover_arquivo()
 {
    printf("Digite o nome do arquivo que voce deseja remover\n");
@@ -108,7 +108,7 @@ void exibir_info(){
       printf("%.f\t", Disco[i].Bytes);
       printf("%.f\t", Disco[i].Blocos);
       printf("%d\t", Disco[i].Bloco_inicio);
-      printf("%.f\n", (Disco[i].Bloco_inicio + Disco[i].Blocos));
+      printf("%d\n", Disco[i].Bloco_final);
    }
 }
 
@@ -145,7 +145,6 @@ void menu(){
       }
    }while(op != 5);
    printf("Obrigo por usar o 'Emulador de disco 3000 :)', tenha uma boa vida.\n");
-
 }
 int main(){
 
