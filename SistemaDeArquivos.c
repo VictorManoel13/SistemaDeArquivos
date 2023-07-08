@@ -28,7 +28,7 @@ void criar_arquivo(){
    printf("Como deseja nomear o arquivo? ");
    fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
    if(verificar_existencia(Arquivo) == 1){
-      criar_arquivo(Arquivo);
+      criar_arquivo();
    }
    else{
       printf("Quantos Bytes o arquivo possui? ");
