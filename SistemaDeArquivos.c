@@ -20,11 +20,13 @@ struct Dados_arquivo Arquivo;
 void criar_arquivo();
 int verificar_existencia(struct Dados_arquivo Arquivo);
 int gravar_disco(struct Dados_arquivo Arquivo);
+int verificar_espaco(struct Dados_arquivo Arquivo);
 void menu();
 
 void criar_arquivo(){
    
    int Retorno_gravar_disco;
+
    printf("Como deseja nomear o arquivo? ");
    fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
    if(verificar_existencia(Arquivo) == 1){
@@ -36,12 +38,21 @@ void criar_arquivo(){
 
       Arquivo.Blocos = ceil(Arquivo.Bytes/8);
 
-      Retorno_gravar_disco = gravar_disco(Arquivo);
-      if( Retorno_gravar_disco == 0){
-         printf("Arquivo gravado com sucesso\n");
-      } else {
-         printf("Erro\n");
+      if(verificar_espaco(Arquivo) == 1){
+
+         for(int i = Arquivo.Bloco_final; Disco[i].Bytes == 0; i++){
+            if()
+         }
+
+      } else{
+         Retorno_gravar_disco = gravar_disco(Arquivo);
+         if( Retorno_gravar_disco == 0){
+            printf("Arquivo gravado com sucesso\n");
+         } else {
+            printf("Erro\n");
+         }
       }
+
    }
 }
 
@@ -60,6 +71,16 @@ int verificar_existencia(struct Dados_arquivo Arquivo){
          } else{
             menu();
          }
+      }
+   }
+   return 0;
+}
+
+int verificar_espaco(struct Dados_arquivo Arquivo){
+   int i;
+   for(i = Arquivo.Bloco_inicio; i == Arquivo.Bloco_final; i++){
+      if(Disco[i].Bytes != 0){
+         return 1;
       }
    }
    return 0;
@@ -139,10 +160,8 @@ void menu(){
 
       switch(op){
          case 1:
-           
             getchar();
             criar_arquivo();
-            
             break;
          case 2:
             getchar();
