@@ -6,66 +6,60 @@
 struct Dados_arquivo{
 
    char Nome[30];
-   float Bits;
+   float Bytes;
    float Blocos;
    int Bloco_inicio;
+   int Bloco_final;
 
 };
 
-// sao 2048 bits divididos em blocos de 8
+// sao 2048 Bytes divididos em blocos de 8
 struct Dados_arquivo Disco[256];
 struct Dados_arquivo Arquivo;
 
-// grava os dados coletados em criar_arquivo no Disco
-int gravar_disco(struct Dados_arquivo Arquivo){
-   int Auxiliar_bloco_final = 0;
-   int Bloco_final;
-   int i;
-   
-   for(i = 0; i < 256; i++){
-      if(Auxiliar_bloco_final == 0 && Disco[i].Bits == 0){
-            Bloco_final = i + Arquivo.Blocos;
-            Auxiliar_bloco_final = 1;
-         }
-      if(Disco[i].Bits == 0){
-         if(i == Bloco_final){
-            return 0;
-         } else {
-            strcpy(Disco[i].Nome, Arquivo.Nome);
-            Disco[i].Bits = Arquivo.Bits;
-            Disco[i].Blocos = Arquivo.Blocos;
-            Disco[i].Bloco_inicio = Arquivo.Bloco_inicio;
-         }
+
+
+int verificar_armazenamento(struct Dados_arquivo Arquivo){
+   int i, j = 0;
+   for (i = 1; i <= 256; i++)
+   {
+      if(Disco[i].Bytes == 0){
+         j++;
+      }
+      if(j == Arquivo.Blocos){
+         return (i+1) - j;
+      } else if(Disco[i].Bytes != 0){
+         j = 0;
       }
    }
-   return 1;
+   return 0;
 }
 
 void criar_arquivo(){
-   int i;
+   void gravar_disco(struct Dados_arquivo Arquivo, int posicao);
+   int verificacao;
    printf("Como deseja nomear o arquivo? ");
    gets(Arquivo.Nome);
-   printf("Quantos bits o arquivo possui? ");
-   scanf("%f", &Arquivo.Bits);
+   printf("Quantos Bytes o arquivo possui? ");
+   scanf("%f", &Arquivo.Bytes);
 
-   Arquivo.Blocos = ceil(Arquivo.Bits/8);
-
-   i = gravar_disco(Arquivo);
-   if(i == 0){
-      printf("Arquivo salvo com sucesso!\n");
-      printf("Seu arquivo ocupara %.f blocos do disco.\n", Arquivo.Blocos);
-   } else{
-      printf("ERRO!\n");
-      printf("NAO HA MEMORIA SUFICIENTE DISPONIVEL\n");
+   Arquivo.Blocos = ceil(Arquivo.Bytes/8);
+   verificacao = verificar_armazenamento(Arquivo);
+   printf("%d\n", verificacao);
+   if( verificacao != 0){
+      gravar_disco(Arquivo, verificacao);
+      printf("Arquivo gravado com sucesso\n");
+   } else {
+      printf("Erro\n");
    }
-
+   
 }
 
 // verifica se ja existe um arquivo com o nome escolhido
 void verificar_existencia(){
    char op;
-   int i;
-   for(i = 0; i < 256; i++){
+   for(int i = 1; i <= 256; i++){
+
       if(strcmp(Arquivo.Nome, Disco[i].Nome) == 0){
          printf("Um arquivo com esse nome ja existe!\n");
          printf("Gostaria de tentar outro nome? s/n");
@@ -79,36 +73,67 @@ void verificar_existencia(){
       }
    }
 }
-
-void remover_arquivo()
-{
-   int i;
-   char nome[30];
-   printf("Digite o nome do arquvo que voce deseja apagar: ");
-   gets(nome);
-   for(i = 0; i < 256; i++){
-      if(strcmp(Disco[i].Nome, nome) == 0){
-         Disco[i].Bits = 0;
-         strcpy(Disco[i].Nome, '\0');
+// grava os dados coletados em criar_arquivo no Disco
+void gravar_disco(struct Dados_arquivo Arquivo, int posicao){
+   int auxiliar_bloco_final = 0;
+   int auxiliar_bloco_inicio;
+   int Bloco_final;
+   
+   for(int i = posicao; i <= 256; i++){
+      if(Disco[i].Bytes == 0){
+         if(auxiliar_bloco_final == 0){
+            Bloco_final = i + (Arquivo.Blocos-1);
+            auxiliar_bloco_final = 1; 
+            auxiliar_bloco_inicio = i;
+         }
+         if(i != Bloco_final){
+            strcpy(Disco[i].Nome, Arquivo.Nome);
+            Disco[i].Bytes = Arquivo.Bytes;
+            Disco[i].Blocos = Arquivo.Blocos;
+            Disco[i].Bloco_inicio = auxiliar_bloco_inicio;
+            Disco[i].Bloco_final = Bloco_final;
+         } else if(Bloco_final == i){
+            strcpy(Disco[i].Nome, Arquivo.Nome);
+            Disco[i].Bytes = Arquivo.Bytes;
+            Disco[i].Blocos = Arquivo.Blocos;
+            Disco[i].Bloco_inicio = auxiliar_bloco_inicio;
+            Disco[i].Bloco_final = Bloco_final;
+            printf("%d\n", i);
+            break;
+         }
       }
    }
-    if(strcmp(Disco[0].Nome, nome) == 0){
-      	printf("%s  %s\n", nome, Disco[0].Nome);
-      }
    
 }
 
+void remover_arquivo()
+{
+   printf("Digite o nome do arquivo que voce deseja remover\n");
+   gets(Arquivo.Nome);
+   int i;
+   for(i = 1; i <= 256; i++){
+      if(strcmp(Disco[i].Nome, Arquivo.Nome) == 0){
+         Disco[i].Blocos = 0;
+         Disco[i].Bloco_inicio = 0;
+         Disco[i].Bloco_final = 0;
+         Disco[i].Bytes = 0;
+         strcpy(Disco[i].Nome, "");
+      }
+   }
+}
+
 void desfragmentar(){
+   
 }
 
 void exibir_info(){
-    int i;
-   for(i = 0; i < 256; i++){
+   int i;
+   for(i = 1; i <= 256; i++){
       printf("%s\t", Disco[i].Nome);
-      printf("%.f\t", Disco[i].Bits);
+      printf("%.f\t", Disco[i].Bytes);
       printf("%.f\t", Disco[i].Blocos);
       printf("%d\t", Disco[i].Bloco_inicio);
-      printf("%.f\n", (Disco[i].Bloco_inicio + Disco[i].Blocos));
+      printf("%d\n", Disco[i].Bloco_final);
    }
 }
 
@@ -127,12 +152,13 @@ void menu(){
 
       switch(op){
          case 1:
+           
             getchar();
             criar_arquivo();
-          
+            
             break;
          case 2:
-         	getchar();
+            getchar();
             remover_arquivo();
             break;
          case 3:
@@ -145,13 +171,12 @@ void menu(){
    }while(op != 5);
    printf("Obrigo por usar o 'Emulador de disco 3000 :)', tenha uma boa vida.\n");
 }
-
-
-
 int main(){
-    int i;
-   for(i = 0; i < 256; i++){
-      Disco[i].Bits = 0;
+
+   for(int i = 1; i <= 256; i++){
+      Disco[i].Bytes = 0;
+      strcpy(Disco[i].Nome, "");
+      Disco[i].Blocos = 0;
    }
 
    menu();
