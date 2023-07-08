@@ -17,43 +17,52 @@ struct Dados_arquivo{
 struct Dados_arquivo Disco[256];
 struct Dados_arquivo Arquivo;
 
+void criar_arquivo();
+int verificar_existencia(struct Dados_arquivo Arquivo);
+int gravar_disco(struct Dados_arquivo Arquivo);
+void menu();
+
 void criar_arquivo(){
    
-   int gravar_disco(struct Dados_arquivo Arquivo);
-   int x;
+   int Retorno_gravar_disco;
    printf("Como deseja nomear o arquivo? ");
    fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
-   printf("Quantos Bytes o arquivo possui? ");
-   scanf("%f", &Arquivo.Bytes);
-
-   Arquivo.Blocos = ceil(Arquivo.Bytes/8);
-
-   x = gravar_disco(Arquivo);
-   if( x == 0){
-      printf("Arquivo gravado com sucesso\n");
-   } else {
-      printf("Erro\n");
+   if(verificar_existencia(Arquivo) == 1){
+      criar_arquivo(Arquivo);
    }
-   
+   else{
+      printf("Quantos Bytes o arquivo possui? ");
+      scanf("%f", &Arquivo.Bytes);
+
+      Arquivo.Blocos = ceil(Arquivo.Bytes/8);
+
+      Retorno_gravar_disco = gravar_disco(Arquivo);
+      if( Retorno_gravar_disco == 0){
+         printf("Arquivo gravado com sucesso\n");
+      } else {
+         printf("Erro\n");
+      }
+   }
 }
 
 // verifica se ja existe um arquivo com o nome escolhido
-void verificar_existencia(){
+int verificar_existencia(struct Dados_arquivo Arquivo){
    char op;
    for(int i = 0; i < 256; i++){
 
       if(strcmp(Arquivo.Nome, Disco[i].Nome) == 0){
          printf("Um arquivo com esse nome ja existe!\n");
-         printf("Gostaria de tentar outro nome? s/n");
+         printf("Gostaria de tentar outro nome? s/n   ");
          scanf("%c", &op);
+         getchar();
          if(op == 's' || op == 'S'){
-            criar_arquivo();
+            return 1;
          } else{
-            printf("Obrigado por usar nosso programa!");
-            exit(1);
+            menu();
          }
       }
    }
+   return 0;
 }
 // grava os dados coletados em criar_arquivo no Disco
 int gravar_disco(struct Dados_arquivo Arquivo){
@@ -95,6 +104,7 @@ void remover_arquivo()
          Disco[i].Blocos = 0;
          Disco[i].Bloco_inicio = 0;
          Disco[i].Bytes = 0;
+         Disco[i].Bloco_final = 0;
          strcpy(Disco[i].Nome, "");
       }
    }
@@ -118,7 +128,6 @@ void exibir_info(){
 void menu(){
 
    int op;
-   printf("Bem vindo ao Emulador de disco 3000 :)\n");
    do{
       printf("\nPor favor selecione uma opção\n");
       printf("\t1 para criar um arquivo\n");
@@ -154,7 +163,7 @@ int main(){
    for(int i = 0; i < 256; i++){
       Disco[i].Bytes = 0;
    }
-
+   printf("Bem vindo ao Emulador de disco 3000 :)\n");
    menu();
 
 }
