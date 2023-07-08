@@ -22,7 +22,7 @@ void criar_arquivo(){
    int gravar_disco(struct Dados_arquivo Arquivo);
    int x;
    printf("Como deseja nomear o arquivo? ");
-   gets(Arquivo.Nome);
+   fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
    printf("Quantos Bytes o arquivo possui? ");
    scanf("%f", &Arquivo.Bytes);
 
@@ -85,7 +85,10 @@ int gravar_disco(struct Dados_arquivo Arquivo){
 void remover_arquivo()
 {
    printf("Digite o nome do arquivo que voce deseja remover\n");
-   gets(Arquivo.Nome);
+   /* o fgets recebe o um ponteiro pro espaço de memoria onde sera armazenado a string, 
+      o tamanho desse espaço de memoria e o locoal de onde a string sera coletada, 
+      no caso do tecla por isso o stdin   */
+   fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
    int i;
    for(i = 0; i < 256; i++){
       if(strcmp(Disco[i].Nome, Arquivo.Nome) == 0){
