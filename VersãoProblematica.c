@@ -23,12 +23,12 @@ int verificar_armazenamento(struct Dados_arquivo Arquivo){
    int i, j = 0;
    for (i = 1; i <= 256; i++)
    {
-      if(Disco[i].Bytes == 0){
+      if(Disco[i].Blocos == 0){
          j++;
       }
       if(j == Arquivo.Blocos){
          return (i+1) - j;
-      } else if(Disco[i].Bytes != 0){
+      } else if(Disco[i].Blocos != 0){
          j = 0;
       }
    }
@@ -80,7 +80,7 @@ void gravar_disco(struct Dados_arquivo Arquivo, int posicao){
    int Bloco_final;
    
    for(int i = posicao; i <= 256; i++){
-      if(Disco[i].Bytes == 0){
+      if(Disco[i].Blocos == 0){
          if(auxiliar_bloco_final == 0){
             Bloco_final = i + (Arquivo.Blocos-1);
             auxiliar_bloco_final = 1; 
@@ -122,8 +122,51 @@ void remover_arquivo()
    }
 }
 
-void desfragmentar(){
-   
+void desfragmentar(int Bloco_inicio_desfragmentacao){
+
+   int i, j, k, l, posicoes_livres = 0, posicoes_ocupadas = 0;
+
+   for (i = Bloco_inicio_desfragmentacao; i <= 256; i++)
+   {
+      if(Disco[i].Blocos == 0){
+         for (j = i; j <=256; j++)
+         {
+            if(Disco[j].Blocos == 0){
+               posicoes_livres++;
+            } else{
+               for (k = j; k <=256; k++){
+                  if(Disco[k].Blocos != 0){
+                     posicoes_ocupadas++;
+                  }else{
+                     break;
+                  }
+               }
+
+               break;  
+            }
+         }
+         break;
+      }
+   }
+   for(l = 0; l < posicoes_ocupadas; l++){
+      strcpy(Disco[i+l].Nome,  Disco[i+posicoes_livres+l].Nome);
+      Disco[i+l].Bytes = Disco[i+posicoes_livres+l].Bytes;
+      Disco[i+l].Blocos = Disco[i+posicoes_livres+l].Blocos; 
+      Disco[i+l].Bloco_inicio = i;
+      Disco[i+l].Bloco_final = i + posicoes_ocupadas - 1;
+   }
+   for(l = 0; l < posicoes_ocupadas; l++){
+      strcpy(Disco[i+posicoes_livres+l].Nome, "");
+      Disco[i+posicoes_livres+l].Bytes = 0;
+      Disco[i+posicoes_livres+l].Blocos = 0; 
+      Disco[i+posicoes_livres+l].Bloco_inicio = 0;
+      Disco[i+posicoes_livres+l].Bloco_final = 0;
+   }
+   if (posicoes_livres == 0 || posicoes_ocupadas == 0) {
+        // Condição de parada: não há mais posições livres e ocupadas consecutivas
+        return;
+    }
+    desfragmentar(i + posicoes_ocupadas);
 }
 
 void exibir_info(){
@@ -152,10 +195,8 @@ void menu(){
 
       switch(op){
          case 1:
-           
             getchar();
             criar_arquivo();
-            
             break;
          case 2:
             getchar();
@@ -165,7 +206,7 @@ void menu(){
             exibir_info();
             break;
          case 4:
-            desfragmentar();
+            desfragmentar(1);
             break;
       }
    }while(op != 5);
