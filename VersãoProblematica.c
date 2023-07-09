@@ -122,53 +122,44 @@ void remover_arquivo()
    }
 }
 
-void desfragmentar(int Bloco_inicio_desfragmentacao){
+void desfragmentar() {
+    int posicao_vazia = 1;
+    int posicao_ocupada = 1;
 
-   int i, j, k, l, posicoes_livres = 0, posicoes_ocupadas = 0;
+    while (posicao_ocupada <= 256) {
+        while (posicao_vazia <= 256 && Disco[posicao_vazia].Blocos != 0) {
+            posicao_vazia++;
+        }
 
-   for (i = Bloco_inicio_desfragmentacao; i <= 256; i++)
-   {
-      if(Disco[i].Blocos == 0){
-         for (j = i; j <=256; j++)
-         {
-            if(Disco[j].Blocos == 0){
-               posicoes_livres++;
-            } else{
-               for (k = j; k <=256; k++){
-                  if(Disco[k].Blocos != 0){
-                     posicoes_ocupadas++;
-                  }else{
-                     break;
-                  }
-               }
+        if (posicao_vazia > 256) {
+            // Não há mais blocos vazios consecutivos, interromper a desfragmentação
+            break;
+        }
 
-               break;  
-            }
-         }
-         break;
-      }
-   }
-   // Copia os dados do arquivo (Nome, Bytes, Blocos) da posição ocupada para a posição livre correspondente.
-   for(l = 0; l < posicoes_ocupadas; l++){
-      strcpy(Disco[i+l].Nome,  Disco[i+posicoes_livres+l].Nome);
-      Disco[i+l].Bytes = Disco[i+posicoes_livres+l].Bytes;
-      Disco[i+l].Blocos = Disco[i+posicoes_livres+l].Blocos; 
-   }
+        posicao_ocupada = posicao_vazia + 1;
 
-   /*Atualiza os campos Bloco_inicio e Bloco_final do arquivo na posição livre.
-   Limpa os campos do arquivo na posição ocupada, atribuindo valores nulos ou zero.*/
-   for(l = 0; l < posicoes_ocupadas; l++){
-      strcpy(Disco[i+posicoes_livres+l].Nome, "");
-      Disco[i+posicoes_livres+l].Bytes = 0;
-      Disco[i+posicoes_livres+l].Blocos = 0; 
-      Disco[i+posicoes_livres+l].Bloco_inicio = 0;
-      Disco[i+posicoes_livres+l].Bloco_final = 0;
-   }
-   if (posicoes_livres == 0 || posicoes_ocupadas == 0) {
-        // Condição de parada: não há mais posições livres e ocupadas consecutivas
-        return;
+        while (posicao_ocupada <= 256 && Disco[posicao_ocupada].Blocos == 0) {
+            posicao_ocupada++;
+        }
+
+        if (posicao_ocupada > 256) {
+            // Não há mais blocos ocupados consecutivos, interromper a desfragmentação
+            break;
+        }
+
+        // Copiar o arquivo da posição ocupada para a posição vazia
+        Disco[posicao_vazia] = Disco[posicao_ocupada];
+
+        // Limpar a posição ocupada
+        Disco[posicao_ocupada].Bytes = 0;
+        strcpy(Disco[posicao_ocupada].Nome, "");
+        Disco[posicao_ocupada].Blocos = 0;
+        Disco[posicao_ocupada].Bloco_inicio = 0;
+        Disco[posicao_ocupada].Bloco_final = 0;
+
+        posicao_vazia++;
+        posicao_ocupada++;
     }
-    desfragmentar(i + posicoes_ocupadas);
 }
 
 void reorganizar_posicao_blocos() {
@@ -193,6 +184,7 @@ void reorganizar_posicao_blocos() {
         }
     }
 }
+
 
 void exibir_info(){
    int i;
