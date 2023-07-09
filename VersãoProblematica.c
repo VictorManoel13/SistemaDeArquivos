@@ -148,13 +148,15 @@ void desfragmentar(int Bloco_inicio_desfragmentacao){
          break;
       }
    }
+   // Copia os dados do arquivo (Nome, Bytes, Blocos) da posição ocupada para a posição livre correspondente.
    for(l = 0; l < posicoes_ocupadas; l++){
       strcpy(Disco[i+l].Nome,  Disco[i+posicoes_livres+l].Nome);
       Disco[i+l].Bytes = Disco[i+posicoes_livres+l].Bytes;
       Disco[i+l].Blocos = Disco[i+posicoes_livres+l].Blocos; 
-      Disco[i+l].Bloco_inicio = i;
-      Disco[i+l].Bloco_final = i + posicoes_ocupadas - 1;
    }
+
+   /*Atualiza os campos Bloco_inicio e Bloco_final do arquivo na posição livre.
+   Limpa os campos do arquivo na posição ocupada, atribuindo valores nulos ou zero.*/
    for(l = 0; l < posicoes_ocupadas; l++){
       strcpy(Disco[i+posicoes_livres+l].Nome, "");
       Disco[i+posicoes_livres+l].Bytes = 0;
@@ -167,6 +169,29 @@ void desfragmentar(int Bloco_inicio_desfragmentacao){
         return;
     }
     desfragmentar(i + posicoes_ocupadas);
+}
+
+void reorganizar_posicao_blocos() {
+    int l = 1;
+    char nome_auxiliar[30];
+    for (l = 1; l <= 256; l++) {
+        if (strcmp(Disco[l].Nome, "") != 0) {
+            strcpy(nome_auxiliar, Disco[l].Nome);
+            int k = 0;
+            for (int i = l; i <= 256; i++) {
+                if (strcmp(nome_auxiliar, Disco[i].Nome) == 0 && strcmp(nome_auxiliar, "") != 0) {
+                    k++;
+                } else {
+                    break;
+                }
+            }
+            for (int i = l; i <= l + k - 1; i++) {
+                Disco[i].Bloco_inicio = l;
+                Disco[i].Bloco_final = l + k - 1;
+            }
+            l += k - 1;
+        }
+    }
 }
 
 void exibir_info(){
@@ -207,6 +232,7 @@ void menu(){
             break;
          case 4:
             desfragmentar(1);
+            reorganizar_posicao_blocos();
             break;
       }
    }while(op != 5);
