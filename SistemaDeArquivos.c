@@ -248,12 +248,12 @@ void menu(){
 		case 3:
 			exibir_info();
 			break;
-      case 4:
-         getchar();
-         if(pesquisar_arquivo() == 1){
-            printf("Não ha arquivo com esse nome.\n");
-         }
-         break;
+      	case 4:
+			getchar();
+			if(pesquisar_arquivo() == 1){
+				printf("Não ha arquivo com esse nome.\n");
+			}
+         	break;
 		case 5:
 			desfragmentar();
 			reorganizar_posicao_blocos();
