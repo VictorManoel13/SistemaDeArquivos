@@ -46,11 +46,12 @@ void criar_arquivo()
 	void gravar_disco(struct Dados_arquivo Arquivo, int posicao);
 	int verificacao;
 	printf("Como deseja nomear o arquivo? ");
-	gets(Arquivo.Nome);
+	fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
+   if(verificar_existencia(Arquivo) == 1)
+	{
 	printf("Quantos Bytes o arquivo possui? ");
 	scanf("%f", &Arquivo.Bytes);
-	if(verificar_existencia(Arquivo) == 1)
-	{
+	
 		Arquivo.Blocos = ceil(Arquivo.Bytes / 8);
 		verificacao = verificar_armazenamento(Arquivo);
 		printf("%d\n", verificacao);
@@ -70,7 +71,6 @@ void criar_arquivo()
 // verifica se ja existe um arquivo com o nome escolhido
 int verificar_existencia(struct Dados_arquivo Arquivo)
 {
-	char op;
 	int i;
 	for(i = 1; i <= 256; i++)
 	{
@@ -86,6 +86,7 @@ int verificar_existencia(struct Dados_arquivo Arquivo)
 		}
 	}
 }
+
 // grava os dados coletados em criar_arquivo no Disco
 void gravar_disco(struct Dados_arquivo Arquivo, int posicao)
 {
@@ -130,7 +131,7 @@ void gravar_disco(struct Dados_arquivo Arquivo, int posicao)
 void remover_arquivo()
 {
 	printf("Digite o nome do arquivo que voce deseja remover\n");
-	gets(Arquivo.Nome);
+	fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
 	int i;
 	for(i = 1; i <= 256; i++)
 	{
@@ -227,6 +228,7 @@ void reorganizar_posicao_blocos()
 void exibir_info()
 {
 	int i;
+   
 	for(i = 1; i <= 256; i++)
 	{
 		printf("%s\t", Disco[i].Nome);
@@ -235,6 +237,24 @@ void exibir_info()
 		printf("%d\t", Disco[i].Bloco_inicio);
 		printf("%d\n", Disco[i].Bloco_final);
 	}
+}
+
+int pesquisar_arquivo()
+{
+	int i;
+   printf("Digite o nome do arquivo que voce deseja ver informacoes: ");
+	fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
+	for(i = 1; i <= 256; i++)
+	{
+      if(strcmp(Disco[i].Nome, Arquivo.Nome) == 0){
+		   printf("\n\tNome do Arquivo: %s", Disco[i].Nome);
+		   printf("\tEspaco em bytes: %.f\n", Disco[i].Bytes);
+		   printf("\tEspaco em blocos: %.f\n", Disco[i].Blocos);
+		   printf("\tPosicao do bloco inicial: %d\n", Disco[i].Bloco_inicio);
+		   printf("\tPosicao do bloco final: %d\n", Disco[i].Bloco_final);
+         return 0;
+	   }
+   }
 }
 
 void menu()
@@ -265,7 +285,13 @@ void menu()
 		case 3:
 			exibir_info();
 			break;
-		case 4:
+      case 4:
+         getchar();
+         if(pesquisar_arquivo() != 0){
+            printf("Nao tem arquivo mor\n");
+         }
+         break;
+		case 5:
 			desfragmentar(1);
 			reorganizar_posicao_blocos();
 			break;
