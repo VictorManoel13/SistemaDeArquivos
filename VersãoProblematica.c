@@ -15,7 +15,7 @@ struct Dados_arquivo
 };
 
 // sao 2048 Bytes divididos em blocos de 8
-struct Dados_arquivo Disco[256];
+struct Dados_arquivo Disco[257];
 struct Dados_arquivo Arquivo;
 
 
@@ -54,7 +54,6 @@ void criar_arquivo()
 	
 		Arquivo.Blocos = ceil(Arquivo.Bytes / 8);
 		verificacao = verificar_armazenamento(Arquivo);
-		printf("%d\n", verificacao);
 		if( verificacao != 0)
 		{
 			gravar_disco(Arquivo, verificacao);
@@ -69,8 +68,7 @@ void criar_arquivo()
 }
 
 // verifica se ja existe um arquivo com o nome escolhido
-int verificar_existencia(struct Dados_arquivo Arquivo)
-{
+int verificar_existencia(struct Dados_arquivo Arquivo){
 	int i;
 	for(i = 1; i <= 256; i++)
 	{
@@ -128,15 +126,12 @@ void gravar_disco(struct Dados_arquivo Arquivo, int posicao)
 
 }
 
-void remover_arquivo()
-{
+int remover_arquivo(){
 	printf("Digite o nome do arquivo que voce deseja remover\n");
 	fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
 	int i;
-	for(i = 1; i <= 256; i++)
-	{
-		if(strcmp(Disco[i].Nome, Arquivo.Nome) == 0)
-		{
+	for(i = 1; i <= 256; i++){
+		if(strcmp(Disco[i].Nome, Arquivo.Nome) == 0){
 			Disco[i].Blocos = 0;
 			Disco[i].Bloco_inicio = 0;
 			Disco[i].Bloco_final = 0;
@@ -144,6 +139,7 @@ void remover_arquivo()
 			strcpy(Disco[i].Nome, "");
 		}
 	}
+   printf("Arquivo excluido com sucesso!");
 }
 
 void desfragmentar()
@@ -255,6 +251,7 @@ int pesquisar_arquivo()
          return 0;
 	   }
    }
+   return 1;
 }
 
 void menu()
@@ -268,8 +265,9 @@ void menu()
 		printf("\t1 para criar um arquivo\n");
 		printf("\t2 para excluir um arquivo\n");
 		printf("\t3 para exibir uma lista do estado do disco\n");
-		printf("\t4 para desfragmentar o disco\n");
-		printf("\tAperte 5 para sair\n");
+		printf("\t4 para pesquisar um arquivo\n");
+      printf("\t5 para desfragmentar o disco\n");
+		printf("\tAperte 6 para sair\n");
 		scanf("%d", &op);
 
 		switch(op)
@@ -287,17 +285,17 @@ void menu()
 			break;
       case 4:
          getchar();
-         if(pesquisar_arquivo() != 0){
+         if(pesquisar_arquivo() == 1){
             printf("Nao tem arquivo mor\n");
          }
          break;
 		case 5:
-			desfragmentar(1);
+			desfragmentar();
 			reorganizar_posicao_blocos();
 			break;
 		}
 	}
-	while(op != 5);
+	while(op != 6);
 	printf("Obrigo por usar o 'Emulador de disco 3000 :)', tenha uma boa vida.\n");
 }
 int main()
