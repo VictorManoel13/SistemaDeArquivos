@@ -236,7 +236,7 @@ void menu(){
 		printf("\t3 para exibir uma lista do estado do disco\n");
 		printf("\t4 para pesquisar um arquivo\n");
       	printf("\t5 para desfragmentar o disco\n");
-		printf("\tAperte 6 para sair\n");
+		printf("\t6 para sair\n");
 		printf("\tOpção:	");
 		scanf("%d", &op);
 
@@ -252,7 +252,7 @@ void menu(){
 		case 3:
 			exibir_info();
 			break;
-      		case 4:
+      	case 4:
 			getchar();
 			if(pesquisar_arquivo() == 1){
 				printf("Não ha arquivo com esse nome\n");
