@@ -226,7 +226,7 @@ void menu(){
 	int op;
 	printf("Bem vindo ao Emulador de disco 3000 :)\n");
 	do{
-		printf("\nPor favor selecione uma opção\n");
+		printf("\nPor favor selecione uma opção:\n");
 		printf("\t1 para criar um arquivo\n");
 		printf("\t2 para excluir um arquivo\n");
 		printf("\t3 para exibir uma lista do estado do disco\n");
@@ -248,7 +248,7 @@ void menu(){
 		case 3:
 			exibir_info();
 			break;
-      	case 4:
+      		case 4:
 			getchar();
 			if(pesquisar_arquivo() == 1){
 				printf("Não ha arquivo com esse nome.\n");
