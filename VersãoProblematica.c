@@ -47,20 +47,17 @@ void criar_arquivo()
 	int verificacao;
 	printf("Como deseja nomear o arquivo? ");
 	fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
-   if(verificar_existencia(Arquivo) == 1)
-	{
+   if(verificar_existencia(Arquivo) == 1){
 	printf("Quantos Bytes o arquivo possui? ");
 	scanf("%f", &Arquivo.Bytes);
 	
 		Arquivo.Blocos = ceil(Arquivo.Bytes / 8);
 		verificacao = verificar_armazenamento(Arquivo);
-		if( verificacao != 0)
-		{
+		if( verificacao != 0){
 			gravar_disco(Arquivo, verificacao);
 			printf("Arquivo gravado com sucesso\n");
 		}
-		else
-		{
+		else{
 			printf("Erro\n");
 		}
 	}
@@ -70,35 +67,28 @@ void criar_arquivo()
 // verifica se ja existe um arquivo com o nome escolhido
 int verificar_existencia(struct Dados_arquivo Arquivo){
 	int i;
-	for(i = 1; i <= 256; i++)
-	{
+	for(i = 1; i <= 256; i++){
 
-		if(strcmp(Arquivo.Nome, Disco[i].Nome) == 0)
-		{
+		if(strcmp(Arquivo.Nome, Disco[i].Nome) == 0){
 			printf("Um arquivo com esse nome ja existe!\n");
 			return 0;
 		}
-		else
-		{
+		else{
 			return 1;
 		}
 	}
 }
 
 // grava os dados coletados em criar_arquivo no Disco
-void gravar_disco(struct Dados_arquivo Arquivo, int posicao)
-{
+void gravar_disco(struct Dados_arquivo Arquivo, int posicao){
 	int auxiliar_bloco_final = 0;
 	int auxiliar_bloco_inicio;
 	int Bloco_final;
 	int i;
 
-	for(i = posicao; i <= 256; i++)
-	{
-		if(Disco[i].Blocos == 0)
-		{
-			if(auxiliar_bloco_final == 0)
-			{
+	for(i = posicao; i <= 256; i++){
+		if(Disco[i].Blocos == 0){
+			if(auxiliar_bloco_final == 0){
 				Bloco_final = i + (Arquivo.Blocos - 1);
 				auxiliar_bloco_final = 1;
 				auxiliar_bloco_inicio = i;
@@ -123,10 +113,9 @@ void gravar_disco(struct Dados_arquivo Arquivo, int posicao)
 			}
 		}
 	}
-
 }
 
-int remover_arquivo(){
+void remover_arquivo(){
 	printf("Digite o nome do arquivo que voce deseja remover\n");
 	fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
 	int i;
