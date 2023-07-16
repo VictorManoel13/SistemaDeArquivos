@@ -2,6 +2,10 @@
 #include<string.h>
 #include<stdlib.h>
 #include<math.h>
+#include <locale.h>
+
+//setlocale(LC_ALL, "Portuguese");
+
 
 struct Dados_arquivo{
 	char Nome[30];
@@ -115,16 +119,20 @@ void remover_arquivo(){
 	printf("Digite o nome do arquivo que voce deseja remover\n");
 	fgets(Arquivo.Nome, sizeof(Arquivo.Nome), stdin);
 	int i;
-	for(i = 1; i <= 256; i++){
-		if(strcmp(Disco[i].Nome, Arquivo.Nome) == 0){
-			Disco[i].Blocos = 0;
-			Disco[i].Bloco_inicio = 0;
-			Disco[i].Bloco_final = 0;
-			Disco[i].Bytes = 0;
-			strcpy(Disco[i].Nome, "");
+	if(verificar_existencia(Arquivo) == 0){
+		for(i = 1; i <= 256; i++){
+			if(strcmp(Disco[i].Nome, Arquivo.Nome) == 0){
+				Disco[i].Blocos = 0;
+				Disco[i].Bloco_inicio = 0;
+				Disco[i].Bloco_final = 0;
+				Disco[i].Bytes = 0;
+				strcpy(Disco[i].Nome, "");
+			}
 		}
+		printf("Arquivo excluido com sucesso!");
+	} else{
+		printf("Arquivo inexistente");
 	}
-   printf("Arquivo excluido com sucesso!");
 }
 // exibe os estado de cada bloco do disco
 void exibir_info(){
@@ -159,22 +167,18 @@ void desfragmentar(){
 	int posicao_vazia = 1;
 	int posicao_ocupada = 1;
 
-	while (posicao_ocupada <= 256){
-		while (posicao_vazia <= 256 && Disco[posicao_vazia].Blocos != 0){
+	while(posicao_ocupada <= 256){
+		while(posicao_vazia <= 256 && Disco[posicao_vazia].Blocos != 0){
 			posicao_vazia++;
 		}
-
 		if (posicao_vazia > 256){
 			// Não há mais blocos vazios consecutivos, interromper a desfragmentação
 			break;
 		}
-
 		posicao_ocupada = posicao_vazia + 1;
-
 		while (posicao_ocupada <= 256 && Disco[posicao_ocupada].Blocos == 0){
 			posicao_ocupada++;
 		}
-
 		if (posicao_ocupada > 256){
 			// Não há mais blocos ocupados consecutivos, interromper a desfragmentação
 			break;
@@ -251,12 +255,15 @@ void menu(){
       		case 4:
 			getchar();
 			if(pesquisar_arquivo() == 1){
-				printf("Não ha arquivo com esse nome.\n");
+				printf("Não ha arquivo com esse nome\n");
 			}
          	break;
 		case 5:
 			desfragmentar();
 			reorganizar_posicao_blocos();
+			break;
+		default:
+			printf("Opção invalida\n");
 			break;
 		}
 	}
